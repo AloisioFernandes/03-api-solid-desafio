@@ -7,6 +7,16 @@ export class InMemoryOrganizationsRepository
 {
   public items: Organization[] = [];
 
+  async findById(id: string): Promise<Organization | null> {
+    const organization = this.items.find((item) => item.id === id);
+
+    if (!organization) {
+      return null;
+    }
+
+    return organization;
+  }
+
   async findByWhatsapp(whatsapp: string): Promise<Organization | null> {
     const organization = this.items.find((item) => item.whatsapp === whatsapp);
 
@@ -19,7 +29,7 @@ export class InMemoryOrganizationsRepository
 
   async create(data: Prisma.OrganizationCreateInput): Promise<Organization> {
     const organization = {
-      id: randomUUID(),
+      id: data.id ?? randomUUID(),
       name: data.name,
       password_hash: data.password_hash,
       address: data.address,
