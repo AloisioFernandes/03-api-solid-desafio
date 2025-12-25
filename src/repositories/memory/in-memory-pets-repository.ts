@@ -22,11 +22,27 @@ export class InMemoryPetsRepository implements PetsRepository {
     return pet;
   }
 
-  async searchMany(location: string, page: number): Promise<Pet[]> {
+  async searchMany(
+    location: string,
+    page: number,
+    optionalFilters?: {
+      age?: number;
+      port?: string;
+      breed?: string;
+      organization_id?: string;
+    }
+  ): Promise<Pet[]> {
     return this.items
       .filter((item) =>
         item.location.toLowerCase().includes(location.toLowerCase())
       )
+      .filter((item) => {
+        return Object.entries(optionalFilters || {}).every(([key, value]) => {
+          if (value === undefined) return true;
+
+          return item[key as keyof Pet] === value;
+        });
+      })
       .slice((page - 1) * 20, page * 20);
   }
 }

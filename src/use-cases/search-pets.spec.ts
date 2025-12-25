@@ -62,4 +62,42 @@ describe("Search Pets Use Case", () => {
       expect.objectContaining({ name: "Pet 22" }),
     ]);
   });
+
+  it("should be able to search pets with optional filters", async () => {
+    await petsRepository.create({
+      name: "Bella",
+      age: 2,
+      port: "SMALL",
+      breed: "Poodle",
+      location: "Curitiba",
+      organization_id: "org-02",
+    });
+
+    await petsRepository.create({
+      name: "Ella",
+      age: 2,
+      port: "LARGE",
+      breed: "Poodle",
+      location: "Curitiba",
+      organization_id: "org-02",
+    });
+
+    await petsRepository.create({
+      name: "Max",
+      age: 4,
+      port: "LARGE",
+      breed: "Bulldog",
+      location: "Curitiba",
+      organization_id: "org-02",
+    });
+
+    const { pets } = await sut.execute({
+      location: "Curitiba",
+      page: 1,
+      optionalFilters: { age: 2, port: "SMALL" },
+    });
+
+    expect(pets).toHaveLength(1);
+    expect(pets).toEqual([expect.objectContaining({ name: "Bella" })]);
+  });
 });
