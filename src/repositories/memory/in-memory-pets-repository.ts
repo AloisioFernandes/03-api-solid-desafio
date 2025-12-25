@@ -21,4 +21,12 @@ export class InMemoryPetsRepository implements PetsRepository {
 
     return pet;
   }
+
+  async searchMany(location: string, page: number): Promise<Pet[]> {
+    return this.items
+      .filter((item) =>
+        item.location.toLowerCase().includes(location.toLowerCase())
+      )
+      .slice((page - 1) * 20, page * 20);
+  }
 }
