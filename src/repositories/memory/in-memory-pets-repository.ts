@@ -5,6 +5,16 @@ import { PetsRepository } from "../pets-repository.js";
 export class InMemoryPetsRepository implements PetsRepository {
   public items: Pet[] = [];
 
+  async findById(id: string): Promise<Pet | null> {
+    const pet = this.items.find((item) => item.id === id);
+
+    if (!pet) {
+      return null;
+    }
+
+    return pet;
+  }
+
   async create(data: Prisma.PetUncheckedCreateInput): Promise<Pet> {
     const pet = {
       id: randomUUID(),
