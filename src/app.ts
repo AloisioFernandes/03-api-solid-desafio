@@ -1,13 +1,16 @@
 import fastifyJwt from "@fastify/jwt";
 import fastify from "fastify";
 import { ZodError } from "zod";
-import { env } from "./env";
+import { env } from "./env/index.js";
+import { organizationsRoutes } from "./http/controllers/organizations/routes.js";
 
 export const app = fastify();
 
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
-})
+});
+
+app.register(organizationsRoutes);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
