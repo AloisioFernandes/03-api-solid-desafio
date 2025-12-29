@@ -14,6 +14,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  MEMBER
+}
+
 model Organization {
   id            String   @id @default(uuid())
   name          String
@@ -21,6 +26,7 @@ model Organization {
   address       String
   password_hash String
   created_at    DateTime @default(now())
+  role          Role     @default(MEMBER)
 
   pets Pet[]
 
@@ -28,17 +34,17 @@ model Organization {
 }
 
 model Pet {
-  id             String   @id @default(uuid())
-  name           String
-  age            Int
-  port           String
-  breed          String
-  location       String
+  id       String @id @default(uuid())
+  name     String
+  age      Int
+  port     String
+  breed    String
+  location String
 
-  organization   Organization @relation(fields: [organization_id], references: [id])
+  organization    Organization @relation(fields: [organization_id], references: [id])
   organization_id String
 
-  created_at     DateTime @default(now())
+  created_at DateTime @default(now())
 
   @@map("pets")
 }
