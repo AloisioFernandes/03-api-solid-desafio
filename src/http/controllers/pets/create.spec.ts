@@ -1,15 +1,17 @@
 import "dotenv/config";
+
 import { execSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { app } from "../../../app.js";
 import { PrismaClient } from "../../../generated/prisma/client.js";
+import { createAndAuthenticateOrganization } from "../../../utils/test/create-and-authenticate-organization.js";
 import { generateDatabaseUrl } from "../../../utils/test/generate-database-url.js";
 
-describe("Register (e2e)", () => {
+describe("Create Pet (e2e)", () => {
   let schema: string;
   let prisma: PrismaClient;
-  let app: any;
 
   beforeAll(async () => {
     schema = randomUUID();
@@ -23,9 +25,6 @@ describe("Register (e2e)", () => {
       log: process.env.NODE_ENV === "dev" ? ["query"] : [],
     });
 
-    const appModule = await import("../../../app.js");
-    app = appModule.app;
-
     await app.ready();
   });
 
@@ -36,13 +35,22 @@ describe("Register (e2e)", () => {
     await prisma.$disconnect();
   });
 
-  it("should be able to register", async () => {
-    const response = await request(app.server).post("/organizations").send({
-      name: "Org Test",
-      address: "Rua Test, 123",
-      whatsapp: "11999999999",
-      password: "123456",
-    });
+  it("should be able to create a pet", async () => {
+    const { token, organization } = await createAndAuthenticateOrganization(
+      app,
+      true
+    );
+
+    const response = await request(app.server)
+      .post(`/pets/${organization.id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Buddy",
+        age: 3,
+        port: "Medium",
+        breed: "Labrador",
+        location: "New York",
+      });
 
     expect(response.statusCode).toEqual(201);
   });
