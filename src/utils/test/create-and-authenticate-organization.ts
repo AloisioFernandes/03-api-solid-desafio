@@ -7,18 +7,20 @@ export async function createAndAuthenticateOrganization(
   app: FastifyInstance,
   isAdmin = false
 ) {
+  const whatsapp = `209999${Math.floor(Math.random() * 100000)}`;
+
   const organization = await prisma.organization.create({
     data: {
       name: "Org Test",
       address: "Rua Test, 123",
-      whatsapp: "15999999999",
+      whatsapp,
       password_hash: await hash("123456", 6),
       role: isAdmin ? "ADMIN" : "MEMBER",
     },
   });
 
   const authResponse = await request(app.server).post("/sessions").send({
-    whatsapp: "15999999999",
+    whatsapp,
     password: "123456",
   });
 
