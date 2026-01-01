@@ -19,7 +19,8 @@ export default defineConfig({
           name: "e2e",
           dir: "src/http/controllers",
           environment: "node",
-          testTimeout: 10000
+          testTimeout: 10000,
+          hookTimeout: 20000
         }
       }
     ],

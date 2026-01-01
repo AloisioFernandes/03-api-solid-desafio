@@ -8,11 +8,12 @@ export async function createAndAuthenticateOrganization(
   isAdmin = false
 ) {
   const whatsapp = `209999${Math.floor(Math.random() * 100000)}`;
+  const address = `Rua Test ${Math.floor(Math.random() * 100000)}, 123`;
 
   const organization = await prisma.organization.create({
     data: {
       name: "Org Test",
-      address: "Rua Test, 123",
+      address,
       whatsapp,
       password_hash: await hash("123456", 6),
       role: isAdmin ? "ADMIN" : "MEMBER",

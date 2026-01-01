@@ -1,27 +1,17 @@
-import { execSync } from "node:child_process";
-import { randomUUID } from "node:crypto";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { app } from "../../../app.js";
-import { PrismaClient } from "../../../generated/prisma/client.js";
 import { createAndAuthenticateOrganization } from "../../../utils/test/create-and-authenticate-organization.js";
-import { generateDatabaseUrl } from "../../../utils/test/generate-database-url.js";
+import { setupTestDatabase, teardownTestDatabase } from "../../../utils/test/setup-test-database.js";
 
 describe("Search Pets (e2e)", () => {
   let schema: string;
-  let prisma: PrismaClient;
+  let prisma: any;
 
   beforeAll(async () => {
-    schema = randomUUID();
-    const databaseUrl = generateDatabaseUrl(schema);
-
-    process.env.DATABASE_URL = databaseUrl;
-
-    execSync("npx prisma db push");
-
-    prisma = new PrismaClient({
-      log: process.env.NODE_ENV === "dev" ? ["query"] : [],
-    });
+    const { prisma: testPrisma, schema: testSchema } = await setupTestDatabase();
+    prisma = testPrisma;
+    schema = testSchema;
 
     await app.ready();
   });
@@ -29,8 +19,7 @@ describe("Search Pets (e2e)", () => {
   afterAll(async () => {
     await app.close();
 
-    await prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);
-    await prisma.$disconnect();
+    await teardownTestDatabase(schema, prisma);
   });
 
   it("should be able to search a pet", async () => {
@@ -58,12 +47,12 @@ describe("Search Pets (e2e)", () => {
         age: 3,
         port: "Medium",
         breed: "Labrador",
-        location: "Salvador",
+        location: organization.address,
       });
 
     const response = await request(app.server)
       .get("/pets/search")
-      .query({ location: "Salvador" })
+      .query({ location: organization.address })
       .set("Authorization", `Bearer ${token}`)
       .send();
 
