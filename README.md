@@ -3,6 +3,6 @@
 [X] Rota cadastrar pet, associado a uma ORG obrigatório (teste)
 [X] Rota listar pets, parâmetro cidade obrigatório (teste)
 [X] Implementar filtros opcionais por características dos pets na listagem (teste)
-[] Rota visualizar um pet específico (teste)
+[X] Rota visualizar um pet específico (teste)
 [X] Acesso admin de ORG restrito a usuários logados
-[] Testes
+[X] Testes
