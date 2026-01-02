@@ -5,10 +5,10 @@ interface SearchPetsUseCaseRequest {
   location: string;
   page: number;
   optionalFilters?: {
-    age?: number;
-    port?: string;
-    breed?: string;
-    organization_id?: string;
+    age?: number | undefined;
+    port?: string | undefined;
+    breed?: string | undefined;
+    organization_id?: string | undefined;
   };
 }
 
