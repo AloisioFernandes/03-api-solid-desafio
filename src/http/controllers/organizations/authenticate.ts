@@ -53,7 +53,10 @@ export async function authenticate(
         httpOnly: true,
       })
       .status(200)
-      .send({ token });
+      .send({
+        token,
+        organization: { ...organization, password_hash: undefined },
+      });
   } catch (error) {
     if (error instanceof InvalidCredentialsError) {
       return reply.status(400).send({ message: error.message });

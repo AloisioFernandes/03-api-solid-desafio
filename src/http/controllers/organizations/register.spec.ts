@@ -2,14 +2,18 @@ import "dotenv/config";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { app } from "../../../app.js";
-import { setupTestDatabase, teardownTestDatabase } from "../../../utils/test/setup-test-database.js";
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+} from "../../../utils/test/setup-test-database.js";
 
 describe("Register (e2e)", () => {
   let schema: string;
   let prisma: any;
 
   beforeAll(async () => {
-    const { prisma: testPrisma, schema: testSchema } = await setupTestDatabase();
+    const { prisma: testPrisma, schema: testSchema } =
+      await setupTestDatabase();
     prisma = testPrisma;
     schema = testSchema;
 

@@ -8,6 +8,7 @@ interface RegisterUseCaseRequest {
   password: string;
   address: string;
   whatsapp: string;
+  role: "ADMIN" | "MEMBER";
 }
 
 interface RegisterUseCaseResponse {
@@ -22,6 +23,7 @@ export class RegisterUseCase {
     password,
     address,
     whatsapp,
+    role,
   }: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
     const password_hash = await hash(password, 6);
 
@@ -37,6 +39,7 @@ export class RegisterUseCase {
       password_hash,
       address,
       whatsapp,
+      role,
     });
 
     return { organization };

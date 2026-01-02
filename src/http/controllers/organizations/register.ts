@@ -9,16 +9,17 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     address: z.string(),
     whatsapp: z.string(),
     password: z.string().min(6),
+    role: z.enum(["ADMIN", "MEMBER"]).default("MEMBER"),
   });
 
-  const { name, address, whatsapp, password } = registerBodySchema.parse(
+  const { name, address, whatsapp, password, role } = registerBodySchema.parse(
     request.body
   );
 
   try {
     const registerService = makeRegisterService();
 
-    await registerService.execute({ name, address, whatsapp, password });
+    await registerService.execute({ name, address, whatsapp, password, role });
   } catch (error) {
     if (error instanceof OrganizationAlreadyExistsError) {
       return reply.status(409).send({ message: error.message });

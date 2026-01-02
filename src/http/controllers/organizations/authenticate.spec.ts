@@ -1,14 +1,18 @@
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { app } from "../../../app.js";
-import { setupTestDatabase, teardownTestDatabase } from "../../../utils/test/setup-test-database.js";
+import {
+  setupTestDatabase,
+  teardownTestDatabase,
+} from "../../../utils/test/setup-test-database.js";
 
 describe("Authenticate (e2e)", () => {
   let schema: string;
   let prisma: any;
 
   beforeAll(async () => {
-    const { prisma: testPrisma, schema: testSchema } = await setupTestDatabase();
+    const { prisma: testPrisma, schema: testSchema } =
+      await setupTestDatabase();
     prisma = testPrisma;
     schema = testSchema;
 
@@ -37,6 +41,9 @@ describe("Authenticate (e2e)", () => {
     expect(response.statusCode).toEqual(200);
     expect(response.body).toEqual({
       token: expect.any(String),
+      organization: expect.objectContaining({
+        whatsapp: "1234567890",
+      }),
     });
   });
 });
